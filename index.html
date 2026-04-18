@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UXposed — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --coral: #D85A30;
+    --coral-light: #FAECE7;
+    --coral-dark: #993C1D;
+    --amber: #BA7517;
+    --amber-light: #FAEEDA;
+    --green: #0F6E56;
+    --green-light: #E1F5EE;
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --border: #E2DDD6;
+    --text: #1A1814;
+    --text-muted: #7A746C;
+    --text-faint: #B0A99E;
+    --font-mono: 'DM Mono', monospace;
+    --font-serif: 'Fraunces', serif;
+    --font-sans: 'DM Sans', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 52px;
+    flex-shrink: 0;
+  }
+
+  .logo {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.3px;
+    color: var(--text);
+    flex-shrink: 0;
+  }
+
+  .logo span { color: var(--coral); }
+
+  .browser-bar {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .url-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+
+  .ext-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--coral);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.15s, background 0.15s;
+    position: relative;
+  }
+
+  .ext-icon:hover { transform: scale(1.05); background: var(--coral-dark); }
+  .ext-icon svg { width: 14px; height: 14px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+  .tabs {
+    display: flex;
+    background: #EAE6DF;
+    padding: 6px 1.5rem 0;
+    gap: 4px;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tab {
+    padding: 7px 16px;
+    border-radius: 6px 6px 0 0;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    background: #D8D3CB;
+    color: var(--text-muted);
+    border: 1px solid transparent;
+    border-bottom: none;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+  }
+
+  .tab.active {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--border);
+  }
+
+  .tab-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .main { display: flex; flex: 1; overflow: hidden; }
+
+  .content-pane { flex: 1; overflow-y: auto; position: relative; }
+
+  .page-view { display: none; height: 100%; }
+  .page-view.active { display: block; }
+
+  .email-chrome { background: #F0EDE8; height: 100%; display: flex; flex-direction: column; }
+
+  .email-topbar { background: #C8392B; padding: 10px 16px; display: flex; align-items: center; gap: 12px; }
+  .email-topbar-logo { font-size: 20px; font-weight: 700; color: white; letter-spacing: -0.5px; }
+  .email-search { flex: 1; background: rgba(255,255,255,0.2); border: none; border-radius: 20px; padding: 6px 14px; color: white; font-size: 13px; outline: none; }
+  .email-search::placeholder { color: rgba(255,255,255,0.7); }
+
+  .email-body-wrap { display: flex; flex: 1; overflow: hidden; }
+
+  .email-sidebar { width: 200px; background: #F0EDE8; padding: 12px 8px; border-right: 1px solid var(--border); flex-shrink: 0; }
+  .email-sidebar-item { padding: 6px 12px; border-radius: 20px; font-size: 13px; color: var(--text-muted); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .email-sidebar-item.active { background: #FFE0DD; color: var(--coral-dark); font-weight: 500; }
+  .email-sidebar-badge { background: var(--coral); color: white; font-size: 10px; padding: 1px 6px; border-radius: 10px; font-family: var(--font-mono); }
+
+  .email-list { width: 280px; border-right: 1px solid var(--border); overflow-y: auto; flex-shrink: 0; background: white; }
+  .email-list-item { padding: 12px 16px; border-bottom: 1px solid #F0EDE8; cursor: pointer; transition: background 0.1s; }
+  .email-list-item:hover { background: #FAF8F5; }
+  .email-list-item.active { background: #FFF5F3; border-left: 3px solid var(--coral); }
+  .email-list-sender { font-size: 13px; font-weight: 500; margin-bottom: 3px; display: flex; justify-content: space-between; }
+  .email-list-time { font-size: 11px; color: var(--text-faint); font-family: var(--font-mono); }
+  .email-list-subject { font-size: 12px; color: var(--text); margin-bottom: 2px; font-weight: 500; }
+  .email-list-preview { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .email-unread { font-weight: 700; }
+
+  .email-open { flex: 1; padding: 24px 32px; overflow-y: auto; background: white; }
+  .email-subject-line { font-size: 20px; font-weight: 500; margin-bottom: 16px; color: var(--text); line-height: 1.3; }
+  .email-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .email-avatar { width: 36px; height: 36px; border-radius: 50%; background: #C8392B; display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; font-weight: 500; flex-shrink: 0; }
+  .email-from { font-size: 13px; }
+  .email-from strong { display: block; margin-bottom: 2px; }
+  .email-from-addr { color: var(--coral); font-family: var(--font-mono); font-size: 11px; }
+  .email-content { font-size: 14px; line-height: 1.7; color: #2A2520; }
+  .email-content p { margin-bottom: 14px; }
+
+  .email-highlight { background: #FFF3CD; border-radius: 3px; padding: 1px 3px; position: relative; transition: all 0.3s; }
+  .email-highlight.flagged { background: #FFD0C4; outline: 2px solid var(--coral); border-radius: 3px; }
+
+  .email-cta { display: inline-block; background: #C8392B; color: white; padding: 10px 24px; border-radius: 4px; font-size: 14px; font-weight: 500; margin: 8px 0 16px; cursor: pointer; text-decoration: none; transition: all 0.3s; }
+  .email-cta.flagged { outline: 2px solid var(--coral); }
+
+  .email-footer-text { font-size: 11px; color: var(--text-faint); line-height: 1.6; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+
+  .website-chrome { background: white; height: 100%; overflow-y: auto; }
+  .site-nav { background: #1A1814; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .site-nav-logo { color: white; font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+  .site-nav-links { display: flex; gap: 20px; }
+  .site-nav-link { color: rgba(255,255,255,0.7); font-size: 13px; cursor: pointer; }
+  .site-banner { background: var(--coral); padding: 8px; text-align: center; font-size: 12px; color: white; font-weight: 500; }
+  .site-body { padding: 32px; max-width: 900px; margin: 0 auto; }
+  .site-product { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 32px; }
+  .product-img { background: #F0EDE8; border-radius: 8px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 60px; }
+  .product-info { padding: 8px 0; }
+  .product-name { font-size: 22px; font-weight: 500; margin-bottom: 8px; line-height: 1.3; }
+  .product-price { font-size: 28px; font-weight: 600; color: var(--coral); margin-bottom: 4px; font-family: var(--font-mono); }
+  .product-original { font-size: 14px; color: var(--text-muted); text-decoration: line-through; margin-bottom: 12px; font-family: var(--font-mono); }
+
+  .scarcity-tag { background: #FFF3CD; border: 1px solid #F5C842; color: #7A5C00; font-size: 12px; padding: 4px 10px; border-radius: 4px; display: inline-block; margin-bottom: 14px; font-weight: 500; transition: all 0.3s; }
+  .scarcity-tag.flagged { background: #FFD0C4; border-color: var(--coral); color: var(--coral-dark); outline: 2px solid var(--coral); }
+
+  .countdown { font-family: var(--font-mono); font-size: 13px; color: var(--coral); margin-bottom: 14px; font-weight: 500; }
+
+  .add-to-cart { width: 100%; background: #1A1814; color: white; border: none; padding: 14px; border-radius: 6px; font-size: 15px; font-weight: 500; cursor: pointer; margin-bottom: 10px; transition: all 0.3s; }
+  .add-to-cart:hover { background: #333; }
+
+  .newsletter-section { background: #F0EDE8; border-radius: 8px; padding: 20px; margin-bottom: 16px; transition: all 0.3s; }
+  .newsletter-section.flagged { outline: 2px solid var(--coral); background: #FFE8E2; }
+  .newsletter-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+  .newsletter-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+  .newsletter-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .newsletter-input { flex: 1; border: 1px solid var(--border); border-radius: 4px; padding: 8px 12px; font-size: 13px; outline: none; background: white; }
+  .newsletter-btn { background: var(--coral); color: white; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; cursor: pointer; }
+  .newsletter-checkbox { font-size: 11px; color: var(--text-muted); display: flex; align-items: flex-start; gap: 6px; line-height: 1.4; }
+
+  .checkout-section { border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+  .checkout-title { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+  .checkout-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; color: var(--text-muted); }
+  .checkout-hidden { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; color: var(--coral); font-weight: 500; transition: all 0.3s; }
+  .checkout-hidden.flagged { background: #FFD0C4; padding: 4px 8px; border-radius: 4px; outline: 2px solid var(--coral); }
+  .checkout-total { display: flex; justify-content: space-between; font-size: 15px; font-weight: 600; padding-top: 10px; border-top: 1px solid var(--border); margin-top: 8px; }
+
+  .decline-btn { width: 100%; background: none; border: none; font-size: 11px; color: var(--text-faint); cursor: pointer; margin-top: 8px; text-decoration: underline; transition: all 0.3s; padding: 4px; }
+  .decline-btn.flagged { color: var(--coral); outline: 2px solid var(--coral); border-radius: 3px; background: #FFD0C4; }
+
+  .ext-panel { width: 320px; background: var(--surface); border-left: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; }
+  .ext-header { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+  .ext-logo { font-family: var(--font-serif); font-size: 17px; font-weight: 500; margin-bottom: 2px; }
+  .ext-logo span { color: var(--coral); }
+  .ext-tagline { font-size: 10px; color: var(--text-faint); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; }
+  .ext-body { flex: 1; overflow-y: auto; padding: 14px 16px; }
+
+  .analyze-btn { width: 100%; background: var(--text); color: white; border: none; padding: 11px; border-radius: 8px; font-size: 13px; font-family: var(--font-mono); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; margin-bottom: 14px; }
+  .analyze-btn:hover { background: #333; }
+  .analyze-btn:disabled { background: #CCC; cursor: not-allowed; }
+  .analyze-btn svg { width: 14px; height: 14px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+  .scan-bar { display: none; margin-bottom: 14px; }
+  .scan-bar.active { display: block; }
+  .scan-track { background: #F0EDE8; border-radius: 4px; height: 4px; overflow: hidden; margin-bottom: 6px; }
+  .scan-fill { height: 100%; background: var(--coral); border-radius: 4px; width: 0%; transition: width 0.1s linear; }
+  .scan-label { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+
+  .report { display: none; }
+  .report.active { display: block; }
+
+  .score-strip { background: var(--bg); border-radius: 8px; padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .score-item-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-faint); font-family: var(--font-mono); margin-bottom: 3px; }
+  .score-item-val { font-size: 20px; font-weight: 500; font-family: var(--font-serif); }
+  .score-item-val.bad { color: var(--coral); }
+  .score-item-val.mid { color: var(--amber); }
+  .score-item-sub { font-size: 10px; color: var(--text-faint); font-family: var(--font-mono); }
+
+  .patterns-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-faint); font-family: var(--font-mono); margin-bottom: 10px; }
+
+  .pcard { border: 1px solid var(--border); border-radius: 8px; padding: 11px 13px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; animation: slideIn 0.3s ease forwards; opacity: 0; transform: translateY(6px); }
+  .pcard:hover { border-color: var(--coral); background: #FFFAF9; }
+
+  @keyframes slideIn { to { opacity: 1; transform: translateY(0); } }
+
+  .pcard-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+  .pcard-name { font-size: 13px; font-weight: 500; font-family: var(--font-serif); line-height: 1.3; }
+  .pbadge { font-size: 10px; padding: 2px 8px; border-radius: 99px; font-family: var(--font-mono); flex-shrink: 0; font-weight: 500; }
+  .pbadge.high { background: var(--coral-light); color: var(--coral-dark); }
+  .pbadge.med { background: var(--amber-light); color: var(--amber); }
+  .pbadge.low { background: var(--green-light); color: var(--green); }
+  .pcard-type { font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-faint); font-family: var(--font-mono); margin-bottom: 5px; }
+  .pcard-desc { font-size: 11.5px; color: var(--text-muted); line-height: 1.55; }
+
+  .idle-state { text-align: center; padding: 40px 20px; color: var(--text-faint); }
+  .idle-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--bg); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+  .idle-icon svg { width: 18px; height: 18px; stroke: var(--text-faint); fill: none; stroke-width: 1.5; }
+  .idle-text { font-size: 12px; line-height: 1.6; font-family: var(--font-mono); }
+
+  .reset-btn { width: 100%; background: none; border: 1px solid var(--border); padding: 8px; border-radius: 6px; font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); cursor: pointer; margin-top: 10px; transition: all 0.15s; }
+  .reset-btn:hover { border-color: var(--coral); color: var(--coral); }
+
+  .error-msg { font-size: 12px; color: var(--coral); font-family: var(--font-mono); text-align: center; padding: 12px; background: var(--coral-light); border-radius: 8px; margin-bottom: 10px; }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">UX<span>posed</span></div>
+  <div class="browser-bar">
+    <div class="url-dot"></div>
+    <span id="url-display">mail.google.com/mail/u/0/#inbox</span>
+  </div>
+  <div class="ext-icon" title="UXposed Extension" onclick="triggerFromIcon()">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('email', this)" id="tab-email">
+    <div class="tab-dot" style="background:#C8392B"></div>
+    security@paypa1.com — Urgent
+  </div>
+  <div class="tab" onclick="switchTab('website', this)" id="tab-website">
+    <div class="tab-dot" style="background:#1A7F64"></div>
+    ShopNow — Wireless Headphones
+  </div>
+</div>
+
+<div class="main">
+  <div class="content-pane">
+
+    <div class="page-view active" id="view-email">
+      <div class="email-chrome">
+        <div class="email-topbar">
+          <div class="email-topbar-logo">Gmail</div>
+          <input class="email-search" placeholder="Search mail" readonly>
+        </div>
+        <div class="email-body-wrap">
+          <div class="email-sidebar">
+            <div class="email-sidebar-item active">Inbox <span class="email-sidebar-badge">3</span></div>
+            <div class="email-sidebar-item">Starred</div>
+            <div class="email-sidebar-item">Sent</div>
+            <div class="email-sidebar-item">Drafts</div>
+            <div class="email-sidebar-item">Spam <span class="email-sidebar-badge">12</span></div>
+          </div>
+          <div class="email-list">
+            <div class="email-list-item active">
+              <div class="email-list-sender email-unread">security@paypa1.com <span class="email-list-time">9:41 AM</span></div>
+              <div class="email-list-subject">⚠️ Urgent: Account Suspended</div>
+              <div class="email-list-preview">Your account has been temporarily suspended due to...</div>
+            </div>
+            <div class="email-list-item">
+              <div class="email-list-sender">Netflix <span class="email-list-time">Yesterday</span></div>
+              <div class="email-list-subject">Your membership is on hold</div>
+              <div class="email-list-preview">Update your payment info to continue...</div>
+            </div>
+            <div class="email-list-item">
+              <div class="email-list-sender">Amazon</div>
+              <div class="email-list-subject">Your order has shipped</div>
+              <div class="email-list-preview">Your package is on its way...</div>
+            </div>
+          </div>
+          <div class="email-open">
+            <div class="email-subject-line">⚠️ Urgent: Your PayPal Account Has Been Suspended — Action Required Within 24 Hours</div>
+            <div class="email-meta">
+              <div class="email-avatar">P</div>
+              <div class="email-from">
+                <strong>PayPal Security Team</strong>
+                <span class="email-from-addr" id="em-sender">security@paypa1.com</span>
+              </div>
+            </div>
+            <div class="email-content">
+              <p>Dear Valued Customer,</p>
+              <p>We have detected <span class="email-highlight" id="em-suspicious">suspicious activity on your account</span>. To protect your funds, we have <strong>temporarily suspended your account</strong>.</p>
+              <p><span class="email-highlight" id="em-urgency">You must verify your identity within the next 24 hours</span> or your account will be permanently closed and your funds may be held for up to 180 days.</p>
+              <p>Click below to restore access immediately:</p>
+              <a class="email-cta" id="em-cta">Verify My Account Now</a>
+              <p style="font-size:12px; color:#999;">If you do not verify, <span class="email-highlight" id="em-threat">we cannot guarantee the safety of your funds</span> and your account will be referred to our fraud department.</p>
+              <div class="email-footer-text">
+                PayPal, Inc. | 2211 North First Street, San Jose, CA | <span style="color:var(--coral)">unsubscribe</span><br>
+                © 2026 PayPal Inc. All rights reserved.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-view" id="view-website">
+      <div class="website-chrome">
+        <div class="site-nav">
+          <div class="site-nav-logo">SHOPNOW</div>
+          <div class="site-nav-links">
+            <div class="site-nav-link">Electronics</div>
+            <div class="site-nav-link">Deals</div>
+            <div class="site-nav-link">Cart (1)</div>
+          </div>
+        </div>
+        <div class="site-banner">FREE SHIPPING on orders over $35 — Today only!</div>
+        <div class="site-body">
+          <div class="site-product">
+            <div class="product-img">🎧</div>
+            <div class="product-info">
+              <div class="product-name">ProSound ANC Wireless Headphones — Premium Edition</div>
+              <div class="product-price">$89.99</div>
+              <div class="product-original">$149.99</div>
+              <div class="scarcity-tag" id="site-scarcity">⚡ Only 2 left in stock!</div>
+              <div class="countdown" id="site-countdown">Deal ends in: 00:14:32</div>
+              <button class="add-to-cart">Add to Cart</button>
+              <div class="newsletter-section" id="site-newsletter">
+                <div class="newsletter-title">Get exclusive member deals</div>
+                <div class="newsletter-sub">Join 2 million shoppers saving every day</div>
+                <div class="newsletter-row">
+                  <input class="newsletter-input" placeholder="your@email.com" readonly>
+                  <button class="newsletter-btn">Join</button>
+                </div>
+                <label class="newsletter-checkbox">
+                  <input type="checkbox" checked style="margin-top:2px; flex-shrink:0;">
+                  I agree to receive daily promotional emails, partner offers, and personalized ads. I understand my data may be shared with third parties.
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="checkout-section">
+            <div class="checkout-title">Order Summary</div>
+            <div class="checkout-row"><span>Headphones × 1</span><span>$89.99</span></div>
+            <div class="checkout-row"><span>Subtotal</span><span>$89.99</span></div>
+            <div class="checkout-hidden" id="site-hidden-fee"><span>Service & processing fee ✦ new</span><span>+$12.99</span></div>
+            <div class="checkout-row"><span>Shipping</span><span>$0.00</span></div>
+            <div class="checkout-total"><span>Total</span><span>$102.98</span></div>
+            <button class="add-to-cart" style="margin-top:14px">Proceed to Checkout</button>
+            <button class="decline-btn" id="site-decline">No thanks, I don't want to save money or protect my purchase</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ext-panel">
+    <div class="ext-header">
+      <div class="ext-logo">UX<span>posed</span></div>
+      <div class="ext-tagline">dark pattern detector</div>
+    </div>
+    <div class="ext-body">
+
+      <button class="analyze-btn" id="analyze-btn" onclick="startAnalysis()">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Analyze this page
+      </button>
+
+      <div class="scan-bar" id="scan-bar">
+        <div class="scan-track"><div class="scan-fill" id="scan-fill"></div></div>
+        <div class="scan-label" id="scan-label">Extracting page content...</div>
+      </div>
+
+      <div id="idle-state" class="idle-state">
+        <div class="idle-icon">
+          <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div class="idle-text">click analyze to scan<br>this page for manipulation</div>
+      </div>
+
+      <div class="report" id="report"></div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // ─── CONFIG ───────────────────────────────────────────────
+  const DEMO_MODE = false  // set to false to use real AWS API
+  const API_URL = 'https://nyszph4w3m.execute-api.us-west-2.amazonaws.com/analyze'
+  // ──────────────────────────────────────────────────────────
+
+  let currentTab = 'email'
+  let analyzing = false
+
+  const hardcodedReports = {
+    email: {
+      ethicsScore: 18,
+      summary: 'Phishing email impersonating PayPal using urgency, fear, and identity spoofing.',
+      patterns: [
+        { type: 'false urgency', name: 'Artificial deadline threat', severity: 'high', description: 'Claims your account will be permanently closed in 24 hours — a pressure tactic with no real basis designed to override careful thinking.', highlight: ['em-urgency'] },
+        { type: 'impersonation', name: 'Spoofed sender identity', severity: 'high', description: 'The sender address is paypa1.com (with a number "1") not paypal.com — designed to look legitimate at a glance but route to a malicious domain.', highlight: ['em-sender'] },
+        { type: 'fear appeal', name: 'Fund safety threat', severity: 'high', description: '"We cannot guarantee the safety of your funds" exploits loss aversion — the fear of losing money is stronger than the desire to gain it.', highlight: ['em-threat'] },
+        { type: 'deceptive cta', name: 'Misleading action button', severity: 'med', description: 'The "Verify My Account Now" button links to an external domain, not PayPal. Urgency in the label discourages users from pausing to inspect the URL.', highlight: ['em-cta'] },
+      ]
+    },
+    website: {
+      ethicsScore: 31,
+      summary: 'E-commerce checkout page using multiple dark patterns to pressure purchase decisions.',
+      patterns: [
+        { type: 'confirmshaming', name: 'Guilt-trip opt-out', severity: 'high', description: 'The decline button reads "I don\'t want to save money or protect my purchase" — deliberately humiliating phrasing designed to make users feel foolish for saying no.', highlight: ['site-decline'] },
+        { type: 'hidden costs', name: 'Late-stage fee reveal', severity: 'high', description: 'A $12.99 "service & processing fee" only appears in the order summary after the user has committed to a product — a classic bait-and-switch on final price.', highlight: ['site-hidden-fee'] },
+        { type: 'artificial scarcity', name: 'False stock pressure', severity: 'med', description: '"Only 2 left!" on a mass-produced consumer product creates urgency that cannot be verified and likely resets — pushing users to buy before they\'re ready.', highlight: ['site-scarcity'] },
+        { type: 'forced consent', name: 'Pre-checked data sharing', severity: 'med', description: 'The newsletter signup includes a pre-checked box consenting to third-party data sharing. Users must actively opt out — the default exploits inertia.', highlight: ['site-newsletter'] },
+      ]
+    }
+  }
+
+  const scanSteps = [
+    [15, 'Extracting page content...'],
+    [35, 'Running sentiment analysis...'],
+    [55, 'Detecting manipulation patterns...'],
+    [75, 'Cross-referencing dark pattern taxonomy...'],
+    [90, 'Calculating ethics score...'],
+    [100, 'Analysis complete'],
+  ]
+
+  function switchTab(tab, el) {
+    currentTab = tab
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+    el.classList.add('active')
+    document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'))
+    document.getElementById('view-' + tab).classList.add('active')
+    document.getElementById('url-display').textContent = tab === 'email'
+      ? 'mail.google.com/mail/u/0/#inbox'
+      : 'shopnow.com/product/prosound-anc-headphones'
+    resetPanel()
+  }
+
+  function triggerFromIcon() { startAnalysis() }
+
+  function resetPanel() {
+    analyzing = false
+    const btn = document.getElementById('analyze-btn')
+    btn.disabled = false
+    btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> Analyze this page'
+    document.getElementById('scan-bar').classList.remove('active')
+    document.getElementById('scan-fill').style.width = '0%'
+    document.getElementById('idle-state').style.display = 'block'
+    document.getElementById('report').classList.remove('active')
+    document.getElementById('report').innerHTML = ''
+    clearHighlights()
+  }
+
+  function clearHighlights() {
+    document.querySelectorAll('.flagged').forEach(el => el.classList.remove('flagged'))
+  }
+
+  async function startAnalysis() {
+    if (analyzing) return
+    analyzing = true
+    clearHighlights()
+    document.getElementById('idle-state').style.display = 'none'
+    document.getElementById('report').classList.remove('active')
+    document.getElementById('report').innerHTML = ''
+    document.getElementById('analyze-btn').disabled = true
+    document.getElementById('analyze-btn').innerHTML = 'Scanning...'
+    document.getElementById('scan-bar').classList.add('active')
+
+    let step = 0
+    function tick() {
+      if (step >= scanSteps.length) {
+        if (DEMO_MODE) {
+          showReport(hardcodedReports[currentTab])
+        } else {
+          runRealAnalysis()
+        }
+        return
+      }
+      const [pct, label] = scanSteps[step]
+      document.getElementById('scan-fill').style.width = pct + '%'
+      document.getElementById('scan-label').textContent = label
+      step++
+      setTimeout(tick, step === scanSteps.length ? 400 : 320)
+    }
+    tick()
+  }
+
+  async function runRealAnalysis() {
+    try {
+      const pageText = document.getElementById(currentTab === 'email' ? 'view-email' : 'view-website').innerText
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: pageText,
+          source: currentTab === 'email' ? 'mail.google.com' : 'shopnow.com',
+          type: currentTab === 'email' ? 'email' : 'webpage'
+        })
+      })
+      const data = await response.json()
+      showReport(data)
+    } catch (err) {
+      console.error(err)
+      showReport(hardcodedReports[currentTab]) // fallback if API fails
+    }
+  }
+
+  function showReport(data) {
+    document.getElementById('scan-bar').classList.remove('active')
+
+    const patterns = data.patterns || []
+    const score = data.ethicsScore ?? data.score ?? 0
+    const highCount = patterns.filter(p => p.severity === 'high').length
+
+    const report = document.getElementById('report')
+    report.innerHTML = `
+      <div class="score-strip">
+        <div class="score-item">
+          <div class="score-item-label">ethics score</div>
+          <div class="score-item-val bad">${score}</div>
+          <div class="score-item-sub">out of 100</div>
+        </div>
+        <div class="score-item">
+          <div class="score-item-label">patterns found</div>
+          <div class="score-item-val mid">${patterns.length}</div>
+          <div class="score-item-sub">${highCount} high severity</div>
+        </div>
+      </div>
+      <div class="patterns-label">detected patterns</div>
+      ${patterns.map((p, i) => `
+        <div class="pcard" style="animation-delay:${i * 0.08}s" onclick="highlightPattern(${JSON.stringify(p.highlight || []).replace(/"/g, '&quot;')})">
+          <div class="pcard-type">${p.type || ''}</div>
+          <div class="pcard-top">
+            <div class="pcard-name">${p.name}</div>
+            <div class="pbadge ${p.severity === 'high' ? 'high' : p.severity === 'med' ? 'med' : 'low'}">${p.severity}</div>
+          </div>
+          <div class="pcard-desc">${p.description || p.desc || ''}</div>
+        </div>
+      `).join('')}
+      <button class="reset-btn" onclick="resetPanel()">↺ scan again</button>
+    `
+
+    report.classList.add('active')
+
+    setTimeout(() => {
+      patterns.forEach(p => {
+        const ids = p.highlight || []
+        ids.forEach(id => {
+          const el = document.getElementById(id)
+          if (el) el.classList.add('flagged')
+        })
+      })
+    }, patterns.length * 80 + 200)
+  }
+
+  function highlightPattern(ids) {
+    clearHighlights()
+    ids.forEach(id => {
+      const el = document.getElementById(id)
+      if (el) {
+        el.classList.add('flagged')
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    })
+  }
+
+  // countdown timer
+  let secs = 14 * 60 + 32
+  setInterval(() => {
+    secs = Math.max(0, secs - 1)
+    const m = String(Math.floor(secs / 60)).padStart(2, '0')
+    const s = String(secs % 60).padStart(2, '0')
+    const el = document.getElementById('site-countdown')
+    if (el) el.textContent = `Deal ends in: 00:${m}:${s}`
+  }, 1000)
+</script>
+</body>
+</html>
