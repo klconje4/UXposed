@@ -1,33 +1,31 @@
 # UXposed
 
-A dark pattern and phishing detection tool that scans webpages and emails for manipulation tactics in real time
+Dark patterns work because they're designed to skip your rational thinking entirely. Urgency, guilt, and confusion are engineered to get you to act before you can think. UXposed interrupts that automatic process long enough to surface what's actually going on — so you're responding to reality instead of reacting to whatever someone designed you to feel. As a Cognitive Science major minoring in Computer Science, my goal is to make the human experience of using technology much more pleasant.
 
-## What it does
+## Features
 
-UXposed analyzes the content of any webpage or email and identifies manipulative design patterns and phishing tactics. Each detected pattern gets a severity rating (high, medium, low) and an explanation of each one.
+- **Analyze** — scans any webpage or email for dark patterns and phishing tactics, returns an ethics score and simple explanation of each one
+- **Translate** — automatically finds terms and conditions and fine print on the page and breaks it down into what you're actually agreeing to
+- **History** — persistent log of every page you've scanned, powered by DynamoDB
 
-**Detection categories include:**
-- False urgency and artificial deadlines
-- Confirmshaming and guilt-trip opt-outs
-- Hidden costs revealed at the last step
-- Artificial scarcity and fake stock pressure
-- Spoofed sender identity and impersonation
-- Fear-based coercion and fund safety threats
-- Forced consent through pre-checked boxes
-- Deceptive calls to action
+## Tech Stack
 
-## Built with
+**Frontend:** HTML, CSS, JavaScript, Vite, GitHub Pages
 
-**Frontend**
-- Vanilla HTML, CSS, JavaScript
-- Vite for local development
-- Deployed on GitHub Pages
-
-**AWS Backend**
+**AWS Backend:**
+- API Gateway — REST endpoint connecting frontend to Lambda
+- Lambda — serverless function running the full analysis pipeline
 - Amazon Comprehend — sentiment analysis and key phrase extraction
-- Amazon Bedrock (Claude Sonnet) — dark pattern reasoning and cognitive bias identification
-- AWS Lambda — serverless backend pipeline
-- Amazon API Gateway — REST endpoint connecting frontend to Lambda
-- Amazon DynamoDB — report history storage
-- Amazon S3 — screenshot storage
+- Amazon Bedrock (Claude Sonnet) — dark pattern reasoning and plain language translation
+- DynamoDB — persistent report history
 
+## How it works
+
+The extension reads the live page DOM or email body and sends the text to a Lambda function via API Gateway. Lambda runs it through Comprehend for pre-analysis, then passes the enriched input to Bedrock which identifies manipulation tactics, names the cognitive bias each one exploits, and returns a structured report. Every scan is saved to DynamoDB.
+
+## Demo website (Github Pages)
+https://klconje4.github.io/UXposed/
+
+
+## Built at
+AWS Hackathon 2026
