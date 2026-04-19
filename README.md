@@ -1,6 +1,6 @@
 # UXposed
 
-Dark patterns work because they're designed to skip your rational thinking entirely. Urgency, guilt, and confusion are engineered to get you to act before you can think. UXposed interrupts that automatic process long enough to surface what's actually going on — so you're responding to reality instead of reacting to whatever someone designed you to feel. As a Cognitive Science major minoring in Computer Science, my goal is to make the human experience of using technology much more pleasant.
+Dark patterns work because they're designed to skip your rational thinking entirely. Urgency, guilt, and confusion are engineered to get you to act before you can think. UXposed interrupts that automatic process long enough to surface what's actually going on, so you're responding to reality instead of reacting to whatever someone designed you to feel. As a Cognitive Science major minoring in Computer Science, my goal is to make the human experience of using technology much more pleasant.
 
 ## Features
 
@@ -25,6 +25,7 @@ The extension reads the live page DOM or email body and sends the text to a Lamb
 
 ## Demo website (Github Pages)
 https://klconje4.github.io/UXposed/
+(click the lyre icon next to the star icon to start analyzing the page)
 
 
 ## Built at
