@@ -425,8 +425,8 @@
   /* page content area */
   .page-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
 </style>
-  <script type="module" crossorigin src="/UXposed/assets/index-6N7dOQ8J.js"></script>
-  <link rel="stylesheet" crossorigin href="/UXposed/assets/index-DDiKYg8v.css">
+  <script type="module" crossorigin src="/UXposed/assets/index-DVSQX7bz.js"></script>
+  <link rel="stylesheet" crossorigin href="/UXposed/assets/index-CR_6sP9r.css">
 </head>
 <body style="display:flex;flex-direction:column;height:100vh;overflow:hidden;">
 
@@ -607,6 +607,7 @@
       <div class="panel-tabs">
         <div class="panel-tab active" onclick="switchPanelTab('analyze', this)">Analyze</div>
         <div class="panel-tab" onclick="switchPanelTab('translate', this)">Translate</div>
+        <div class="panel-tab" onclick="switchPanelTab('history', this)">History</div>
       </div>
 
       <div class="panel-section active" id="panel-analyze">
@@ -637,6 +638,13 @@
           automatically scans this page<br>for terms, consent copy,<br>and hidden clauses
         </div>
         <div class="translation-result" id="translation-result"></div>
+      </div>
+
+      <div class="panel-section" id="panel-history">
+        <div class="history-label">recent scans</div>
+        <div class="history-list" id="history-list">
+          <div class="history-empty">loading...</div>
+        </div>
       </div>
 
     </div>
