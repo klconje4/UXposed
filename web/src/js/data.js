@@ -63,3 +63,12 @@ export const hardcodedTranslation = {
     ]
   }
 }
+
+export const hardcodedHistory = [
+  { reportId: '1', source: 'amazon.com', type: 'webpage', ethicsScore: 29, patternCount: 5, timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString() },
+  { reportId: '2', source: 'mail.google.com', type: 'email', ethicsScore: 18, patternCount: 4, timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString() },
+  { reportId: '3', source: 'shopnow.com', type: 'webpage', ethicsScore: 31, patternCount: 4, timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString() },
+  { reportId: '4', source: 'linkedin.com', type: 'webpage', ethicsScore: 44, patternCount: 3, timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString() },
+  { reportId: '5', source: 'netflix.com', type: 'webpage', ethicsScore: 38, patternCount: 3, timestamp: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString() },
+  { reportId: '6', source: 'doordash.com', type: 'webpage', ethicsScore: 52, patternCount: 2, timestamp: new Date(Date.now() - 1000 * 60 * 60 * 96).toISOString() },
+]

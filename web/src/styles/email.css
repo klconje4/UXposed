@@ -32,7 +32,7 @@
 .email-content { font-size: 14px; line-height: 1.7; color: #2A2520; }
 .email-content p { margin-bottom: 14px; }
 
-.email-highlight { background: #FFF3CD; border-radius: 3px; padding: 1px 3px; transition: all 0.3s; }
+.email-highlight { background: transparent; border-radius: 3px; padding: 1px 3px; transition: all 0.3s; }
 .email-highlight.flagged { background: #FFD0C4; outline: 2px solid var(--coral); border-radius: 3px; }
 
 .email-cta { display: inline-block; background: #C8392B; color: white; padding: 10px 24px; border-radius: 4px; font-size: 14px; font-weight: 500; margin: 8px 0 16px; cursor: pointer; text-decoration: none; transition: all 0.3s; }

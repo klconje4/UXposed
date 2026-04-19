@@ -609,6 +609,7 @@
       <div class="panel-tabs">
         <div class="panel-tab active" onclick="switchPanelTab('analyze', this)">Analyze</div>
         <div class="panel-tab" onclick="switchPanelTab('translate', this)">Translate</div>
+        <div class="panel-tab" onclick="switchPanelTab('history', this)">History</div>
       </div>
 
       <div class="panel-section active" id="panel-analyze">
@@ -641,12 +642,20 @@
         <div class="translation-result" id="translation-result"></div>
       </div>
 
+      <div class="panel-section" id="panel-history">
+        <div class="history-label">recent scans</div>
+        <div class="history-list" id="history-list">
+          <div class="history-empty">loading...</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
 <script type="module">
   import { initTranslator } from '/src/js/translator.js'
+  import { initHistory } from '/src/js/history.js'
   import '/src/js/api.js'
   import '/src/js/highlight.js'
   import '/src/js/report.js'
@@ -654,6 +663,7 @@
   import '/src/js/scanner.js'
 
   initTranslator()
+  initHistory()
 
   window.switchPanelTab = function(tab, el) {
     document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'))
@@ -682,6 +692,7 @@
     const el = document.getElementById('site-countdown')
     if (el) el.textContent = `Deal ends in: 00:${m}:${s}`
   }, 1000)
+  
 </script>
 </body>
 </html>
