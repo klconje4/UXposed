@@ -425,7 +425,7 @@
   /* page content area */
   .page-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
 </style>
-  <script type="module" crossorigin src="/UXposed/assets/index-DVSQX7bz.js"></script>
+  <script type="module" crossorigin src="/UXposed/assets/index-C1zRPj6V.js"></script>
   <link rel="stylesheet" crossorigin href="/UXposed/assets/index-CR_6sP9r.css">
 </head>
 <body style="display:flex;flex-direction:column;height:100vh;overflow:hidden;">
@@ -441,6 +441,11 @@
     <div class="chrome-tab" onclick="switchTab('website', this)" id="tab-website">
       <div class="chrome-tab-favicon">🛒</div>
       <div class="chrome-tab-title">ShopNow — Wireless Headphones</div>
+      <div class="chrome-tab-close">×</div>
+    </div>
+    <div class="chrome-tab" onclick="switchTab('nexus', this)" id="tab-nexus">
+      <div class="chrome-tab-favicon">💜</div>
+      <div class="chrome-tab-title">Nexus — Create Account</div>
       <div class="chrome-tab-close">×</div>
     </div>
     <div class="chrome-tab-new">+</div>
@@ -584,6 +589,74 @@
             <div class="checkout-total"><span>Total</span><span>$102.98</span></div>
             <button class="add-to-cart" style="margin-top:14px">Proceed to Checkout</button>
             <button class="decline-btn" id="site-decline">No thanks, I don't want to save money or protect my purchase</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-view" id="view-nexus">
+      <div style="background:#0F0E17;min-height:100%;display:flex;align-items:center;justify-content:center;padding:40px 20px;font-family:'DM Sans',sans-serif;">
+        <div style="width:100%;max-width:400px;">
+          <div style="text-align:center;margin-bottom:32px;">
+            <div style="font-size:32px;font-weight:700;color:white;letter-spacing:-1px;margin-bottom:6px;">nexus<span style="color:#A855F7;">.</span></div>
+            <div style="font-size:14px;color:rgba(255,255,255,0.5);">connect with everyone</div>
+          </div>
+          <div style="background:#1A1826;border-radius:16px;padding:32px;border:1px solid rgba(255,255,255,0.08);">
+            <div style="margin-bottom:16px;">
+              <input placeholder="Full name" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px;color:white;font-size:14px;outline:none;box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:16px;">
+              <input placeholder="Email address" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px;color:white;font-size:14px;outline:none;box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:16px;">
+              <input type="password" placeholder="Password" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px;color:white;font-size:14px;outline:none;box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:16px;">
+              <input placeholder="Date of birth" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px;color:rgba(255,255,255,0.4);font-size:14px;outline:none;box-sizing:border-box;">
+            </div>
+            <button onclick="document.getElementById('nexus-modal').style.display='flex'" style="width:100%;background:#A855F7;color:white;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:16px;">Create Account</button>
+            <div style="font-size:11px;color:rgba(255,255,255,0.35);text-align:center;line-height:1.6;">
+              By creating an account you agree to our 
+              <span onclick="document.getElementById('nexus-modal').style.display='flex'" style="color:#A855F7;cursor:pointer;text-decoration:underline;">Terms of Service</span>, 
+              <span style="color:#A855F7;cursor:pointer;text-decoration:underline;">Privacy Policy</span>, and 
+              <span style="color:#A855F7;cursor:pointer;text-decoration:underline;">Cookie Policy</span>. 
+              Nexus may send you communications and you may change your preferences at any time.
+            </div>
+          </div>
+          <div style="text-align:center;margin-top:20px;font-size:13px;color:rgba(255,255,255,0.4);">
+            Already have an account? <span style="color:#A855F7;cursor:pointer;">Sign in</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TERMS MODAL -->
+      <div id="nexus-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:50;align-items:center;justify-content:center;padding:20px;">
+        <div style="background:#1A1826;border-radius:16px;width:100%;max-width:560px;max-height:80vh;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,0.1);">
+          <div style="padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:16px;font-weight:600;color:white;">Terms of Service</div>
+            <div onclick="document.getElementById('nexus-modal').style.display='none'" style="color:rgba(255,255,255,0.4);cursor:pointer;font-size:20px;">×</div>
+          </div>
+          <div style="padding:24px;overflow-y:auto;flex:1;font-size:12px;color:rgba(255,255,255,0.55);line-height:1.8;" id="nexus-terms">
+            <p style="margin-bottom:12px;font-size:13px;color:rgba(255,255,255,0.8);font-weight:500;">Last updated: January 1, 2026</p>
+            <p style="margin-bottom:12px;">Welcome to Nexus. By accessing or using our platform, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this platform.</p>
+            <p style="margin-bottom:8px;color:rgba(255,255,255,0.7);font-weight:500;">1. Data Collection and Use</p>
+            <p style="margin-bottom:12px;">By creating an account, you grant Nexus an irrevocable, worldwide, royalty-free license to collect, store, process, and share your personal data including but not limited to your name, email address, date of birth, location data, device identifiers, browsing behavior, content interactions, and inferred demographic information with third-party advertising partners, data brokers, and affiliated companies. This license survives termination of your account.</p>
+            <p style="margin-bottom:8px;color:rgba(255,255,255,0.7);font-weight:500;">2. Subscription and Billing</p>
+            <p style="margin-bottom:12px;">Nexus offers a free tier with limited features. By providing payment information, you authorize Nexus to charge your payment method on a recurring monthly basis at the then-current rate. Nexus reserves the right to change pricing at any time with 7 days notice sent to your registered email address. Failure to cancel before the next billing cycle constitutes acceptance of the new pricing. All charges are non-refundable.</p>
+            <p style="margin-bottom:8px;color:rgba(255,255,255,0.7);font-weight:500;">3. Content License</p>
+            <p style="margin-bottom:12px;">You retain ownership of content you post, however by posting content on Nexus you grant us a perpetual, non-exclusive, transferable, sublicensable, royalty-free license to use, reproduce, modify, adapt, publish, translate, and distribute your content across any media for any purpose including commercial purposes without compensation to you.</p>
+            <p style="margin-bottom:8px;color:rgba(255,255,255,0.7);font-weight:500;">4. Arbitration and Class Action Waiver</p>
+            <p style="margin-bottom:12px;">ANY DISPUTE ARISING FROM THESE TERMS OR YOUR USE OF NEXUS SHALL BE RESOLVED THROUGH BINDING INDIVIDUAL ARBITRATION AND NOT THROUGH CLASS ACTION LITIGATION. YOU WAIVE YOUR RIGHT TO PARTICIPATE IN CLASS ACTION LAWSUITS AGAINST NEXUS. Arbitration shall take place in Delaware and shall be governed by the rules of the American Arbitration Association.</p>
+            <p style="margin-bottom:8px;color:rgba(255,255,255,0.7);font-weight:500;">5. Account Termination</p>
+            <p style="margin-bottom:12px;">Nexus reserves the right to suspend or terminate your account at any time for any reason without notice, and without liability to you. Upon termination, your data may be retained for up to 7 years for legal compliance purposes. You may request deletion of your data by submitting a written request via certified mail to our registered office in Delaware.</p>
+            <p style="margin-bottom:8px;color:rgba(255,255,255,0.7);font-weight:500;">6. Limitation of Liability</p>
+            <p style="margin-bottom:12px;">To the maximum extent permitted by law, Nexus shall not be liable for any indirect, incidental, special, consequential, or punitive damages including loss of profits, data, or goodwill arising from your use of the platform. Nexus's total liability shall not exceed the amount you paid in the 12 months preceding the claim or 0, whichever is less.</p>
+            <p style="margin-bottom:8px;color:rgba(255,255,255,0.7);font-weight:500;">7. Communications</p>
+            <p style="margin-bottom:12px;">By creating an account you consent to receive marketing communications, promotional emails, push notifications, and SMS messages from Nexus and its advertising partners. To opt out you must navigate to Settings, select Notifications, select each category individually, and toggle each setting to off. Note that opting out of marketing communications does not affect transactional or legally required communications.</p>
+          </div>
+          <div style="padding:16px 24px;border-top:1px solid rgba(255,255,255,0.08);display:flex;gap:10px;">
+            <button onclick="document.getElementById('nexus-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;font-size:13px;cursor:pointer;">Decline</button>
+            <button onclick="document.getElementById('nexus-modal').style.display='none'" style="flex:2;background:#A855F7;color:white;border:none;border-radius:10px;padding:12px;font-size:13px;font-weight:600;cursor:pointer;">I Agree</button>
           </div>
         </div>
       </div>
