@@ -1,6 +1,6 @@
 import { hardcodedReports, hardcodedTranslation } from './data.js'
 
-const DEMO_MODE = false
+const DEMO_MODE = true
 const API_URL = window.location.hostname === 'localhost'
   ? '/api/analyze'
   : 'https://nyszph4w3m.execute-api.us-west-2.amazonaws.com/analyze'
